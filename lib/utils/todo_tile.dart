@@ -22,15 +22,14 @@ class ToDoList extends StatelessWidget {
       padding: const EdgeInsets.only(left: 25, right: 25, top: 25),
       child: Slidable(
         endActionPane: ActionPane(
-          motion: StretchMotion(),
+          motion: const StretchMotion(),
           children: [
             SlidableAction(
                 onPressed: deleteFunction,
-              icon: Icons.delete,
-              backgroundColor: Colors.red.shade300,
+                icon: Icons.delete,
+                backgroundColor: Colors.red.shade300,
             )
           ],
-
         ),
         child: Container(
           padding: EdgeInsets.all(24),
@@ -53,11 +52,10 @@ class ToDoList extends StatelessWidget {
                 decoration: isDone
                     ? TextDecoration.lineThrough
                     : TextDecoration.none,
-              ),
+               ),
               ),
             ],
           ),
-
         ),
       ),
     );

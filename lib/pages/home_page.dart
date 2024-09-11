@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:todo_app/data/database.dart';
 import 'package:todo_app/utils/dialog_box.dart';
 import '../utils/todo_tile.dart';
 
@@ -10,30 +12,40 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  //reference the box
+  final _myBox = Hive.box("myBox");
+   ToDoDatabase db = ToDoDatabase();
+
+   @override
+  void initState() {
+    // If this is the frst time  opening app
+    if(_myBox.get("TODOLIST") == null){
+      db.createInitialData();
+    } else {
+      db.loaddata();
+    }
+    super.initState();
+  }
 
   //Text Controller
   final _controller = TextEditingController();
 
-  //create a list
-  List toDoList = [
-
-  ];
-
   //checkbox changed
   void checkBoxChanged(bool? value, int index){
     setState(() {
-      toDoList[index][1] = !toDoList[index][1];
+      db.toDoList[index][1] = !db.toDoList[index][1];
     });
+    db.updateDatabase();
   }
-
 
   //save new task
   void saveNewTask(){
     setState(() {
-      toDoList.add([_controller.text, false]);
+      db.toDoList.add([_controller.text, false]);
       _controller.clear();
     });
     Navigator.of(context).pop();
+    db.updateDatabase();
   }
 
   //New task
@@ -42,9 +54,8 @@ class _HomePageState extends State<HomePage> {
       return DialogBox(
         controller: _controller,
         onSave: saveNewTask,
-        onCancel: () => Navigator.of(context).pop() ,
-
-      );
+        onCancel: () => Navigator.of(context).pop(),
+        );
       }
     );
   }
@@ -52,8 +63,9 @@ class _HomePageState extends State<HomePage> {
   //delete task
   void deleteTask(int index){
     setState(() {
-      toDoList.removeAt(index);
+      db.toDoList.removeAt(index);
     });
+    db.updateDatabase();
   }
 
   @override
@@ -61,21 +73,21 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       backgroundColor: Colors.yellow[200],
       appBar: AppBar(
-        title: Text("To Do"),
+        title: const Text("To Do"),
         elevation: 0,
       ),
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
         onPressed: createNewTask,
+        child:  Icon(Icons.add),
       ),
       body: ListView.builder(
-        itemCount: toDoList.length,
+        itemCount: db.toDoList.length,
           itemBuilder: (context,index) {
           return ToDoList(
-              taskName: toDoList[index][0],
-              isDone: toDoList[index][1],
+              taskName: db.toDoList[index][0],
+              isDone: db.toDoList[index][1],
               onChanged: (value) => checkBoxChanged(value, index),
-            deleteFunction: (context) => deleteTask,
+              deleteFunction: (context) => deleteTask(index),
           );
         }
       )

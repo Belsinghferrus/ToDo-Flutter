@@ -16,8 +16,7 @@ class _HomePageState extends State<HomePage> {
 
   //create a list
   List toDoList = [
-    ["Make Tutorial", false],
-    ["Do Exercise", false]
+
   ];
 
   //checkbox changed
@@ -50,6 +49,12 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  //delete task
+  void deleteTask(int index){
+    setState(() {
+      toDoList.removeAt(index);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,6 +75,7 @@ class _HomePageState extends State<HomePage> {
               taskName: toDoList[index][0],
               isDone: toDoList[index][1],
               onChanged: (value) => checkBoxChanged(value, index),
+            deleteFunction: (context) => deleteTask,
           );
         }
       )

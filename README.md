@@ -29,4 +29,4 @@ This project is complete done using flutter
 <li>Strike-through after completion</li>
 </ul>
 
-![To Do Application](/assets/app.png"ToDo")
+<img src="assets/app.png"/>
